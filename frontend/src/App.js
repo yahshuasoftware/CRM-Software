@@ -1,23 +1,42 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Navbar from './pages/Components/Navbar';
-import DepartmentList from './pages/Components/DepartmentList';
-import AddDepartment from './pages/Components/AddDepartment';
-import LoginPage from './pages/Components/LoginPage';
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import Login from "./pages/Login";
+import AdminDashboard from "./pages/AdminDashboard";
+import EmployeeDashboard from "./pages/EmployeeDashboard";
+import DepartmentManagement from "./pages/DepartmentManagement";
+import PrivateRoutes from "./utils/PrivateRoutes";
+import RoleBasedRoutes from "./utils/RoleBasedRoutes";
 
-const App = () => {
+function App() {
   return (
-    <Router>
-      <Navbar />
+    <BrowserRouter>
+    <Routes>
+
+      <Route path="/" element ={<DepartmentManagement/>}></Route>
+    </Routes>
       <Routes>
-        {/* {/* Default route should show the LoginPage 
-        <Route path="/" element={<LoginPage />} /> {/* Main starting point is the LoginPage */}
-        <Route path="/login" element={<LoginPage />} /> {/* This ensures that login page is also accessible */}
-        <Route path="/" element={<DepartmentList />} /> {/* This is the DepartmentList page */}
-        <Route path="/add" element={<AddDepartment />} />
+        <Route path="/login" element={<Login />} />
+        <Route
+          path="/admin-dashboard"
+          element={
+            <PrivateRoutes>
+              <RoleBasedRoutes requiredRole={["admin"]}>
+                <AdminDashboard />
+              </RoleBasedRoutes>
+            </PrivateRoutes>
+          }
+        />
+        <Route
+          path="/employee-dashboard"
+          element={
+            <PrivateRoutes>
+              <EmployeeDashboard />
+            </PrivateRoutes>
+          }
+        />
+        <Route path="/unauthorized" element={<div>Unauthorized Access</div>} />
       </Routes>
-    </Router>
+    </BrowserRouter>
   );
-};
+}
 
 export default App;
